@@ -1,28 +1,28 @@
 import os
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application
 
-from ai import ask_ai
+from buttons import start
+from buttons import help
+from buttons import about
+from buttons import back_to_bot
+
 
 TOKEN = os.getenv("BOT_TOKEN")
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "🤖 أهلاً بك في KingAI!\n\nاكتب أي سؤال وسأحاول مساعدتك."
-    )
 
-async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_message = update.message.text
+def main():
+    app = Application.builder().token(TOKEN).build()
 
-    reply = ask_ai(user_message)
+    # Register buttons/modules
+    start.register(app)
+    help.register(app)
+    about.register(app)
+    back_to_bot.register(app)
 
-    await update.message.reply_text(reply)
+    print("KingAI is running...")
 
-app = Application.builder().token(TOKEN).build()
+    app.run_polling()
 
-app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
 
-print("KingAI is running...")
-
-app.run_polling()
+if __name__ == "__main__":
+    main()
