@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 from telegram.ext import Application
 
@@ -11,13 +12,17 @@ from buttons import chats
 from buttons import new_chat
 
 
+load_dotenv()
+
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 
 def main():
+    if not BOT_TOKEN:
+        print("❌ BOT_TOKEN not found in .env")
+        return
 
     app = Application.builder().token(BOT_TOKEN).build()
-
 
     # Commands
     start.register(app)
@@ -25,14 +30,11 @@ def main():
     about.register(app)
     back_to_bot.register(app)
 
-
     # Buttons
     chats.register(app)
     new_chat.register(app)
 
-
     print("👑 KingAI is running...")
-
 
     app.run_polling()
 
