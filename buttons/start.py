@@ -1,30 +1,20 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def main_buttons():
     keyboard = [
         [
-            InlineKeyboardButton("🤖 Chat AI", callback_data="chat_ai"),
-            InlineKeyboardButton("💬 Chats", callback_data="chats")
+            InlineKeyboardButton(
+                "💬 محادثة جديدة",
+                callback_data="new_chat"
+            )
         ],
         [
-            InlineKeyboardButton("⚙️ Settings", callback_data="settings"),
-            InlineKeyboardButton("❓ Help", callback_data="help")
+            InlineKeyboardButton(
+                "🧠 المحادثات",
+                callback_data="chats"
+            )
         ]
     ]
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    await update.message.reply_text(
-        "👑 Welcome to KingAI\n\nاختر من القائمة:",
-        reply_markup=reply_markup
-    )
-
-
-def register(application):
-    from telegram.ext import CommandHandler
-
-    application.add_handler(
-        CommandHandler("start", start_command)
-    )
+    return InlineKeyboardMarkup(keyboard)
