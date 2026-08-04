@@ -1,25 +1,38 @@
 import os
+
 from telegram.ext import Application
 
-from buttons import start
-from buttons import help
-from buttons import about
-from buttons import back_to_bot
+from commands import start
+from commands import help
+from commands import about
+from commands import back_to_bot
+
+from buttons import chats
+from buttons import new_chat
 
 
-TOKEN = os.getenv("BOT_TOKEN")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 
 def main():
-    app = Application.builder().token(TOKEN).build()
 
-    # Register buttons/modules
+    app = Application.builder().token(BOT_TOKEN).build()
+
+
+    # Commands
     start.register(app)
     help.register(app)
     about.register(app)
     back_to_bot.register(app)
 
-    print("KingAI is running...")
+
+    # Buttons
+    chats.register(app)
+    new_chat.register(app)
+
+
+    print("👑 KingAI is running...")
+
 
     app.run_polling()
 
