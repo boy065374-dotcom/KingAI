@@ -1,42 +1,20 @@
-from telegram import Update
-from telegram.ext import ContextTypes, CallbackQueryHandler
+from telegram.ext import CallbackQueryHandler
 
 
-async def new_chat_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
+async def new_chat_button(update, context):
 
-    context.user_data["creating_chat"] = True
+    await update.callback_query.answer()
 
-    await query.message.reply_text(
-        "➕ اكتب اسم المحادثة الجديدة:"
+    await update.callback_query.message.reply_text(
+        "🧠 اكتب رسالتك الآن لـ King AI"
     )
 
 
-async def new_chat_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if context.user_data.get("creating_chat"):
+def register(app):
 
-        chat_name = update.message.text
-
-        context.user_data["creating_chat"] = False
-        context.user_data["current_chat"] = chat_name
-
-        await update.message.reply_text(
-            f"✅ تم إنشاء المحادثة:\n\n💬 {chat_name}"
-        )
-
-
-def register(application):
-    application.add_handler(
+    app.add_handler(
         CallbackQueryHandler(
             new_chat_button,
             pattern="^new_chat$"
-        )
-    )
-
-    application.add_handler(
-        MessageHandler(
-            filters.TEXT & ~filters.COMMAND,
-            new_chat_name
         )
     )
