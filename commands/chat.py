@@ -2,16 +2,18 @@ from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler
 
 
-async def chat_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data["chat_mode"] = True
+async def chats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
-        "🤖 تم تشغيل وضع المحادثة.\n"
-        "اكتب رسالتك وسيقوم KingAI بالرد عليك."
+        "💬 لا توجد محادثات محفوظة حاليا"
     )
 
 
-def register(application):
-    application.add_handler(
-        CommandHandler("chat", chat_command)
+def register(app):
+
+    app.add_handler(
+        CommandHandler(
+            "chats",
+            chats_command
+        )
     )
