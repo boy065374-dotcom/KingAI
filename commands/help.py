@@ -6,9 +6,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         "🤖 أوامر KingAI:\n\n"
-        "/help - عرض الأوامر\n"
-        "/chats - عرض المحادثات\n"
-        "/back - الرجوع للبوت\n"
+        "💬 /chats - عرض المحادثات\n"
+        "⬅️ /back - الرجوع إلى البوت الرئيسي\n"
+        "❓ /help - عرض قائمة الأوامر\n\n"
+        "اكتب أي رسالة وسأرد عليك بالذكاء الاصطناعي 🧠"
     )
 
 
