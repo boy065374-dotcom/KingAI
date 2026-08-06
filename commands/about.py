@@ -1,30 +1,22 @@
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, CommandHandler
 
 
 async def about_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
     await update.message.reply_text(
-        """
-👑 KingAI
-
-🤖 بوت ذكاء اصطناعي يعمل بواسطة Gemini.
-
-✨ المميزات:
-• محادثات متعددة
-• حفظ المحادثات
-• ذاكرة للمستخدم
-• نظام قريب من ChatGPT
-
-🎮 Developed by King Games
-
-🚀 Version: 1.0
-        """
+        "👑 KingAI\n\n"
+        "🤖 بوت ذكاء اصطناعي مبني باستخدام Gemini API\n"
+        "⚡ سريع وبسيط وسهل الاستخدام\n\n"
+        "المطور: King Team"
     )
 
 
-def register(application):
-    from telegram.ext import CommandHandler
+def register(app):
 
-    application.add_handler(
-        CommandHandler("about", about_command)
+    app.add_handler(
+        CommandHandler(
+            "about",
+            about_command
+        )
     )
