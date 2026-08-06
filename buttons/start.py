@@ -1,4 +1,4 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 
@@ -16,14 +16,18 @@ async def start_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if update.message:
-        await update.message.reply_text(
-            "👑 أهلاً بك في KingAI\n\nاختر من القائمة:",
-            reply_markup=reply_markup
-        )
+    await update.message.reply_text(
+        "👑 أهلاً بك في KingAI\n\nاختر من القائمة:",
+        reply_markup=reply_markup
+    )
 
-    elif update.callback_query:
-        await update.callback_query.message.edit_text(
-            "👑 أهلاً بك في KingAI\n\nاختر من القائمة:",
-            reply_markup=reply_markup
+
+def register(app):
+    from telegram.ext import CommandHandler
+
+    app.add_handler(
+        CommandHandler(
+            "start",
+            start_button
         )
+    )
