@@ -1,72 +1,83 @@
-import os
 import json
-import uuid
+import os
 from datetime import datetime
 
 
-DATA_FOLDER = "data"
+CHATS_FILE = "data/chats.json"
 
 
-def get_user_folder(user_id):
-    return os.path.join(DATA_FOLDER, str(user_id))
+def load_chats():
+    if not os.path.exists(CHATS_FILE):
+        return []
+
+    with open(CHATS_FILE, "r", encoding="utf-8") as file:
+        return json.load(file)
 
 
-def create_user(user_id):
-    user_folder = get_user_folder(user_id)
-    chats_folder = os.path.join(user_folder, "chats")
+def save_chats(chats):
+    os.makedirs("data", exist_ok=True)
 
-    os.makedirs(chats_folder, exist_ok=True)
-
-    return user_folder
-
-
-def create_chat(user_id, title):
-    create_user(user_id)
-
-    chat_id = str(uuid.uuid4())[:8]
-
-    chat_data = {
-        "id": chat_id,
-        "title": title,
-        "created_at": str(datetime.now()),
-        "messages": []
-    }
-
-    path = os.path.join(
-        get_user_folder(user_id),
-        "chats",
-        f"{chat_id}.json"
-    )
-
-    with open(path, "w", encoding="utf-8") as file:
+    with open(CHATS_FILE, "w", encoding="utf-8") as file:
         json.dump(
-            chat_data,
+            chats,
             file,
             ensure_ascii=False,
             indent=4
         )
 
-    return chat_id
+
+def create_chat(user_id):
+
+    chats = load_chats()
+
+    chat = {
+        "user_id": user_id,
+        "created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "messages": []
+    }
+
+    chats.append(chat)
+
+    save_chats(chats)
+
+    return chat
 
 
-def get_user_chats(user_id):
-    chats_folder = os.path.join(
-        get_user_folder(user_id),
-        "chats"
-    )
+def add_message(user_id, user_message, ai_message):
 
-    if not os.path.exists(chats_folder):
-        return []
+    chats = load_chats()
 
-    chats = []
+    user_chat = None
 
-    for file_name in os.listdir(chats_folder):
-        if file_name.endswith(".json"):
-            with open(
-                os.path.join(chats_folder, file_name),
-                "r",
-                encoding="utf-8"
-            ) as file:
-                chats.append(json.load(file))
+    for chat in chats:
+        if chat["user_id"] == user_id:
+            user_chat = chat
+            break
 
-    return chats
+    if user_chat is None:
+        user_chat = create_chat(user_id)
+        chats = load_chats()
+
+        for chat in chats:
+            if chat["user_id"] == user_id:
+                user_chat = chat
+                break
+
+    user_chat["messages"].append({
+        "user": user_message,
+        "ai": ai_message,
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+    save_chats(chats)
+
+
+def get_chat(user_id):
+
+    chats = load_chats()
+
+    for chat in chats:
+        if chat["user_id"] == user_id:
+            return chat
+
+    return None
