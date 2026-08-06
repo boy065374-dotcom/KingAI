@@ -8,6 +8,7 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 
 URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={API_KEY}"
 
+
 def ask_ai(message):
     try:
         headers = {
@@ -26,7 +27,12 @@ def ask_ai(message):
             ]
         }
 
-        response = requests.post(URL, headers=headers, json=data, timeout=30)
+        response = requests.post(
+            URL,
+            headers=headers,
+            json=data,
+            timeout=60
+        )
 
         if response.status_code != 200:
             return f"خطأ API:\n{response.text}"
