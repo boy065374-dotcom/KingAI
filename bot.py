@@ -10,6 +10,8 @@ from telegram.ext import (
 
 from ai import ask_ai
 
+from features.user_manager import add_user
+
 # Commands
 from commands import start, chat, help, about, back_to_bot
 
@@ -28,11 +30,21 @@ async def ai_message(update: ContextTypes.DEFAULT_TYPE, context):
 
     user_message = update.message.text
 
+    user = update.effective_user
+
+    add_user(
+        user.id,
+        user.username
+    )
+
     await update.message.reply_text(
         "⏳ جاري التفكير..."
     )
 
-    response = ask_ai(user_message)
+    response = ask_ai(
+        user_message,
+        user.id
+    )
 
     await update.message.reply_text(
         response
