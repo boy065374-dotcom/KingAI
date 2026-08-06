@@ -1,28 +1,22 @@
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, CommandHandler
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
     await update.message.reply_text(
-        """
-🤖 KingAI Help
-
-الأوامر:
-
-/start - تشغيل البوت
-/help - المساعدة
-/about - معلومات عن البوت
-/back_to_bot - الرجوع للبوت الأساسي
-
-💬 المحادثات:
-استخدم زر Chats لإدارة محادثاتك.
-        """
+        "🤖 أوامر KingAI:\n\n"
+        "/help - عرض الأوامر\n"
+        "/chats - عرض المحادثات\n"
+        "/back - الرجوع للبوت\n"
     )
 
 
-def register(application):
-    from telegram.ext import CommandHandler
+def register(app):
 
-    application.add_handler(
-        CommandHandler("help", help_command)
+    app.add_handler(
+        CommandHandler(
+            "help",
+            help_command
+        )
     )
