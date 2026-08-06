@@ -1,26 +1,20 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
+from telegram import Update
+from telegram.ext import ContextTypes, CommandHandler
 
 
-async def back_to_bot_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [
-        [
-            InlineKeyboardButton(
-                "🔙 Back to Bot",
-                url="https://t.me/Diverse11Zbot"
-            )
-        ]
-    ]
+async def back_to_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
-        "اضغط للرجوع إلى البوت الأساسي 👇",
-        reply_markup=InlineKeyboardMarkup(keyboard)
+        "⬅️ للرجوع إلى البوت الرئيسي:\n\n"
+        "https://t.me/Diverse11Zbot"
     )
 
 
-def register(application):
-    from telegram.ext import CommandHandler
+def register(app):
 
-    application.add_handler(
-        CommandHandler("back_to_bot", back_to_bot_command)
+    app.add_handler(
+        CommandHandler(
+            "back",
+            back_to_bot
+        )
     )
