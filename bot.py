@@ -1,17 +1,20 @@
 import os
 from dotenv import load_dotenv
 
-from telegram import Update
 from telegram.ext import (
     Application,
     MessageHandler,
-    filters,
-    ContextTypes
+    ContextTypes,
+    filters
 )
 
 from ai import ask_ai
 
-from buttons import start, chats, new_chat
+from buttons import start as start_button
+from buttons import chats as chats_button
+from buttons import new_chat
+
+from commands import start, chats, help, about, back_to_bot
 
 
 load_dotenv()
@@ -19,26 +22,41 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 
-async def ai_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_message = update.message.text
+async def ai_message(update, context: ContextTypes.DEFAULT_TYPE):
 
-    await update.message.reply_text("⏳ جاري التفكير...")
+    message = update.message.text
 
-    response = ask_ai(user_message)
+    await update.message.reply_text(
+        "⏳ جاري التفكير..."
+    )
 
-    await update.message.reply_text(response)
+    response = ask_ai(message)
+
+    await update.message.reply_text(
+        response
+    )
 
 
 def main():
 
     app = Application.builder().token(BOT_TOKEN).build()
 
-    # تسجيل الأزرار
+
+    # Commands
     start.register(app)
     chats.register(app)
+    help.register(app)
+    about.register(app)
+    back_to_bot.register(app)
+
+
+    # Buttons
+    start_button.register(app)
+    chats_button.register(app)
     new_chat.register(app)
 
-    # استقبال رسائل المستخدم
+
+    # AI messages
     app.add_handler(
         MessageHandler(
             filters.TEXT & ~filters.COMMAND,
@@ -46,7 +64,8 @@ def main():
         )
     )
 
-    print("👑 KingAI is running...")
+
+    print("👑 KingAI Started")
 
     app.run_polling()
 
