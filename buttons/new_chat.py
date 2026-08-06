@@ -2,16 +2,16 @@ from telegram.ext import CallbackQueryHandler
 
 
 async def new_chat_button(update, context):
+    query = update.callback_query
 
-    await update.callback_query.answer()
+    await query.answer()
 
-    await update.callback_query.message.reply_text(
-        "🧠 اكتب رسالتك الآن لـ King AI"
+    await query.message.reply_text(
+        "🧠 اكتب رسالتك الآن لـ KingAI"
     )
 
 
 def register(app):
-
     app.add_handler(
         CallbackQueryHandler(
             new_chat_button,
