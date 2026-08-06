@@ -1,19 +1,17 @@
 import os
 from dotenv import load_dotenv
 
+from telegram import Update
 from telegram.ext import (
     Application,
     MessageHandler,
-    filters
+    filters,
+    ContextTypes
 )
 
 from ai import ask_ai
 
-from commands import help
-from commands import about
-
-from buttons import chats
-from buttons import new_chat
+from buttons import start, chats, new_chat
 
 
 load_dotenv()
@@ -21,10 +19,10 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 
-async def ai_chat(update, context):
+async def ai_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
 
-    await update.message.reply_text("🤖 جاري التفكير...")
+    await update.message.reply_text("⏳ جاري التفكير...")
 
     response = ask_ai(user_message)
 
@@ -33,31 +31,20 @@ async def ai_chat(update, context):
 
 def main():
 
-    if not BOT_TOKEN:
-        print("❌ BOT_TOKEN not found")
-        return
-
     app = Application.builder().token(BOT_TOKEN).build()
 
-
-    # Commands
-    help.register(app)
-    about.register(app)
-
-
-    # Buttons
+    # تسجيل الأزرار
+    start.register(app)
     chats.register(app)
     new_chat.register(app)
 
-
-    # Gemini AI
+    # استقبال رسائل المستخدم
     app.add_handler(
         MessageHandler(
             filters.TEXT & ~filters.COMMAND,
-            ai_chat
+            ai_message
         )
     )
-
 
     print("👑 KingAI is running...")
 
