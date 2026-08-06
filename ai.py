@@ -1,19 +1,40 @@
 import os
+import requests
 from dotenv import load_dotenv
-import google.generativeai as genai
 
 load_dotenv()
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 
-genai.configure(api_key=API_KEY)
-
-model = genai.GenerativeModel("gemini-1.5-flash")
+URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
 
 def ask_ai(message):
     try:
-        response = model.generate_content(message)
-        return response.text
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        data = {
+            "contents": [
+                {
+                    "parts": [
+                        {
+                            "text": message
+                        }
+                    ]
+                }
+            ]
+        }
+
+        response = requests.post(URL, headers=headers, json=data, timeout=30)
+
+        if response.status_code != 200:
+            return f"خطأ API:\n{response.text}"
+
+        result = response.json()
+
+        return result["candidates"][0]["content"]["parts"][0]["text"]
+
     except Exception as e:
-        return f"حدث خطأ: {e}"
+        return f"حدث خطأ:\n{e}"
