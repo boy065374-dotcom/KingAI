@@ -1,76 +1,69 @@
 import json
 import os
 
-
 MEMORY_FILE = "data/memory.json"
 
 
-def load_memory():
+def _load():
 
     if not os.path.exists(MEMORY_FILE):
-        return []
+        return {}
 
-    with open(MEMORY_FILE, "r", encoding="utf-8") as file:
-        return json.load(file)
+    with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
-def save_memory(memory):
+def _save(data):
 
     os.makedirs("data", exist_ok=True)
 
-    with open(MEMORY_FILE, "w", encoding="utf-8") as file:
-        json.dump(
-            memory,
-            file,
-            ensure_ascii=False,
-            indent=4
-        )
-
-
-def add_memory(user_id, info):
-
-    memory = load_memory()
-
-    user_memory = None
-
-    for item in memory:
-        if item["user_id"] == user_id:
-            user_memory = item
-            break
-
-    if user_memory is None:
-
-        user_memory = {
-            "user_id": user_id,
-            "memory": []
-        }
-
-        memory.append(user_memory)
-
-
-    user_memory["memory"].append(info)
-
-    save_memory(memory)
+    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 def get_memory(user_id):
 
-    memory = load_memory()
+    data = _load()
 
-    for item in memory:
-        if item["user_id"] == user_id:
-            return item["memory"]
+    uid = str(user_id)
 
-    return []
+    return data.get(uid, [])
+
+
+def add_memory(user_id, text):
+
+    data = _load()
+
+    uid = str(user_id)
+
+    if uid not in data:
+        data[uid] = []
+
+    if text not in data[uid]:
+        data[uid].append(text)
+
+    _save(data)
+
+
+def remove_memory(user_id, text):
+
+    data = _load()
+
+    uid = str(user_id)
+
+    if uid in data and text in data[uid]:
+        data[uid].remove(text)
+
+        _save(data)
 
 
 def clear_memory(user_id):
 
-    memory = load_memory()
+    data = _load()
 
-    memory = [
-        item for item in memory
-        if item["user_id"] != user_id
-    ]
+    uid = str(user_id)
 
-    save_memory(memory)
+    if uid in data:
+        data[uid] = []
+
+        _save(data)
