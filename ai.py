@@ -3,7 +3,6 @@ import requests
 from dotenv import load_dotenv
 
 from features.memory import get_memory
-from features.chat_manager import add_message
 
 load_dotenv()
 
@@ -30,7 +29,6 @@ def ask_ai(message, user_id=None):
 رسالة المستخدم:
 {message}
 """
-
 
         headers = {
             "Content-Type": "application/json"
@@ -60,18 +58,7 @@ def ask_ai(message, user_id=None):
 
         result = response.json()
 
-        answer = result["candidates"][0]["content"]["parts"][0]["text"]
-
-
-        if user_id:
-            add_message(
-                user_id,
-                message,
-                answer
-            )
-
-
-        return answer
+        return result["candidates"][0]["content"]["parts"][0]["text"]
 
 
     except Exception as e:
