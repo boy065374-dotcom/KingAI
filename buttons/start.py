@@ -6,11 +6,20 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
         [
-            InlineKeyboardButton("🧠 محادثة جديدة", callback_data="new_chat"),
-            InlineKeyboardButton("💬 المحادثات", callback_data="chats")
+            InlineKeyboardButton(
+                "🧠 محادثة جديدة",
+                callback_data="new_chat"
+            ),
+            InlineKeyboardButton(
+                "💬 المحادثات",
+                callback_data="chats"
+            )
         ],
         [
-            InlineKeyboardButton("🛑 إنهاء المحادثة", callback_data="end_chat")
+            InlineKeyboardButton(
+                "🛑 إنهاء الدردشة",
+                callback_data="end_chat"
+            )
         ]
     ]
 
