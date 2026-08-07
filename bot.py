@@ -10,15 +10,15 @@ from telegram.ext import (
 
 from ai import ask_ai
 
-from features.user_manager import add_user
+from features import user_manager
+from features import chat_manager
 
-# Commands
 from commands import start, chat, help, about, back_to_bot
 
-# Buttons
 from buttons import start as start_button
 from buttons import chats as chats_button
 from buttons import new_chat
+from buttons import end_chat
 
 
 load_dotenv()
@@ -28,14 +28,11 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 async def ai_message(update: ContextTypes.DEFAULT_TYPE, context):
 
+    user_id = update.effective_user.id
+
+    user_manager.add_user(user_id)
+
     user_message = update.message.text
-
-    user = update.effective_user
-
-    add_user(
-        user.id,
-        user.username
-    )
 
     await update.message.reply_text(
         "⏳ جاري التفكير..."
@@ -43,7 +40,13 @@ async def ai_message(update: ContextTypes.DEFAULT_TYPE, context):
 
     response = ask_ai(
         user_message,
-        user.id
+        user_id
+    )
+
+    chat_manager.add_message(
+        user_id,
+        user_message,
+        response
     )
 
     await update.message.reply_text(
@@ -56,7 +59,7 @@ def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
 
-    # Register Commands
+    # Commands
     start.register(app)
     chat.register(app)
     help.register(app)
@@ -64,13 +67,14 @@ def main():
     back_to_bot.register(app)
 
 
-    # Register Buttons
+    # Buttons
     start_button.register(app)
     chats_button.register(app)
     new_chat.register(app)
+    end_chat.register(app)
 
 
-    # AI Handler
+    # AI Messages
     app.add_handler(
         MessageHandler(
             filters.TEXT & ~filters.COMMAND,
